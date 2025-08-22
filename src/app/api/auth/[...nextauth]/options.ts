@@ -8,15 +8,7 @@ type Credentials = {
   email: string;
   password: string;
 };
-interface IUser {
-  _id: string;
-  email: string;
-  password: string;
-  username?: string;
-  isVerified?: boolean;
-  profilepic: string;
 
-}
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
