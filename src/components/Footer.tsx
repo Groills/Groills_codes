@@ -54,19 +54,8 @@ export default function Footer() {
   xMove: Array<number>;
   duration: number;
 };
-  const [bubbles, setBubbles] = useState<Bubble[]>([])
 
-  useEffect(() => {
-    const generated = Array.from({ length: 8 }, () => ({
-      width: Math.random() * 200 + 100,
-      height: Math.random() * 200 + 100,
-      top: Math.random() * 100,
-      left: Math.random() * 100,
-      xMove: [0, Math.random() * 40 - 20, 0],
-      duration: 5 + Math.random() * 10,
-    }));
-    setBubbles(generated);
-  }, []);
+
   return (
     <footer className="relative bg-gradient-to-b from-black to-gray-900 border-t border-gray-800 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

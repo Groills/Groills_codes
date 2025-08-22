@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         success: false,
-        message: "Error while verifying the code",
+        message: "Error while verifying the code" + Error,
       },
       { status: 500 }
     );

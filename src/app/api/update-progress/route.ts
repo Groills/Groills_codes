@@ -22,7 +22,7 @@ const getToday = ():
   | "Saturday"
   | "Sunday" => {
   const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
-  if (days.includes(today as any)) {
+  if (days.includes(today as (typeof days)[number])) {
     return today as (typeof days)[number];
   }
   throw new Error(`Invalid day string: ${today}`);

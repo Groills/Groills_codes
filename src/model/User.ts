@@ -1,4 +1,3 @@
-import { progress } from "framer-motion";
 import mongoose, { Schema, Document } from "mongoose";
 
 // Define type for progress item

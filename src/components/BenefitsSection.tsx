@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 function BenefitsSection() {
-  const [expandedCards, setExpandedCards] = useState<any>({});
+  const [expandedCards, setExpandedCards] = useState<Record<number, boolean>>({});
 
   const benefits = [
     {
@@ -95,7 +95,7 @@ function BenefitsSection() {
           <Button
             className="w-full bg-purple-600 hover:bg-purple-700 text-white suppress-hover"
             onClick={() =>
-              setExpandedCards((prev: any) => ({
+              setExpandedCards((prev) => ({
                 ...prev,
                 [index]: !prev[index],
               }))

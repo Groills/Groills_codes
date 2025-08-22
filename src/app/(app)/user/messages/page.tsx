@@ -46,7 +46,7 @@ interface Message {
 interface ownerType {
   _id: string;
   username: string;
-  profilePic: any;
+  profilePic: string;
 }
 const MessageScreen = () => {
   const [dashboardOpen, setDashboardOpen] = useState(false);
@@ -550,7 +550,7 @@ const MessageScreen = () => {
                     <Link href={message.link}>
                       <button
                         className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white font-medium py-1 px-3 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 text-sm shadow-lg hover:shadow-purple-500/20 flex items-center gap-1.5 mt-3 ml-0 sm:ml-0"
-                        onClick={(e) => handleJoinMeeting(message._id)}
+                        onClick={() => handleJoinMeeting(message._id)}
                       >
                         <Mic className="h-4 w-4" />
                         <span>Join Meeting</span>
@@ -594,7 +594,7 @@ const MessageScreen = () => {
                 <h3 className="text-lg font-medium text-gray-400">
                   No notifications
                 </h3>
-                <p className="text-gray-500 mt-1">You're all caught up!</p>
+                <p className="text-gray-500 mt-1">You`&apos;`re all caught up!</p>
               </motion.div>
             )}
           </div>

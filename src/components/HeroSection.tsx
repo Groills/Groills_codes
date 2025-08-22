@@ -5,12 +5,7 @@ import { BackgroundBeams } from "./ui/background-beams";
 import { AnimatedTooltip } from "./ui/animated-tooltip";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-interface User {
-  id: number;
-  name: string;
-  skill: string;
-  avatar: string;
-}
+
 
 const HeroSection = () => {
   const users = [

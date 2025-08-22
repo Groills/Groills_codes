@@ -5,9 +5,14 @@ import { motion, useAnimation } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { FiSend, FiMapPin, FiPhone, FiMail } from "react-icons/fi";
 import { useEffect, useRef } from "react";
+interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+}
 
 const ContactSection = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<ContactFormData>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const controls = useAnimation();
 
@@ -111,7 +116,7 @@ const ContactSection = () => {
     };
   }, []);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ContactFormData) => {
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
       headers: {
@@ -168,7 +173,7 @@ const ContactSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Let's <span className="text-purple-400">Connect</span>
+            Let&apos;s <span className="text-purple-400">Connect</span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             Reach out to start your skill-swapping journey

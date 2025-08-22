@@ -84,7 +84,6 @@ export default function ProfilePictureUpload() {
     // Convert canvas to blob and save
     canvas.toBlob((blob) => {
       if (!blob) return;
-      const file = new File([blob], 'profile-pic.png', { type: 'image/png' });
       // Save to your form state here
       setIsEditing(false);
       // Set your form value with the cropped image

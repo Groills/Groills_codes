@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 export default function VideoMeeting() {
   const { data: session, status: sessionStatus } = useSession();
   const containerRef = useRef<HTMLDivElement>(null);
-  const zpRef = useRef<any>(null);
+  const zpRef = useRef<ZegoUIKitPrebuilt | null>(null);
   const router = useRouter();
   const params = useParams();
   const roomId = Array.isArray(params.roomId)
@@ -18,7 +18,7 @@ export default function VideoMeeting() {
     "init" | "joining" | "joined" | "error"
   >("init");
   const [error, setError] = useState("");
-  const [showMeetingUI, setShowMeetingUI] = useState(true);
+  const showMeetingUI = true;
   const [sdkLoaded, setSdkLoaded] = useState(false);
 
   // Load the SDK
@@ -125,9 +125,11 @@ export default function VideoMeeting() {
             }, 1000);
           },
         });
-      } catch (err: any) {
+      } catch (err) {
         console.error("Meeting init error:", err);
-        setError(err.message || "Failed to join meeting");
+        if(err instanceof Error){
+          setError(err.message || "Failed to join meeting");
+        }
         setMeetingStatus("error");
         if (zpRef.current) {
           zpRef.current.destroy();

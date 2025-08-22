@@ -30,9 +30,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCopilotAction } from "@copilotkit/react-core";
 import { useSession } from "next-auth/react";
-import { AvatarImage, Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AvatarImage, Avatar } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
 
 interface Video {
   _id: string;
@@ -48,7 +47,7 @@ interface Video {
 interface owner {
   _id: string;
   username: string;
-  profilePic: any;
+  profilePic: string;
   createdAt: string;
 }
 type messageType = {
@@ -59,10 +58,10 @@ type messageType = {
 const UserVideosPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const [owner, setOwner] = useState<owner>();
   const { data: session, status } = useSession();
   const [dashboardOpen, setDashboardOpen] = useState(false);
-  const [messages, setMessages] = useState<messageType[]>([]);
+  const messages: messageType[] = [];
+
   const [currentUser, setCurrentUser] = useState<owner>();
 
   function formatDuration(seconds: number) {
@@ -86,13 +85,6 @@ const UserVideosPage = () => {
             id: session?.user._id,
           });
           setVideos(response.data.videos);
-          const ownerResponse = await axios.post(`/api/get-user-id`, {
-            id: session?.user._id,
-          });
-          if (!ownerResponse.data.success) {
-            console.log("Error while getting user by his id");
-          }
-          setOwner(ownerResponse.data.user);
           if (session?.user._id) {
             const currentUser = await axios.post(`/api/get-user-id`, {
               id: session?.user._id,

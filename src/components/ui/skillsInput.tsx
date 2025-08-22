@@ -5,7 +5,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Plus, X } from "lucide-react";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form";
 
 interface SkillsInputProps {
   name: string;
@@ -19,7 +19,7 @@ export function SkillsInput({
   label = "Skills",
   maxSkills = 10,
 }: SkillsInputProps) {
-  const { control, register, formState: { errors } } = useFormContext();
+  const { control, register } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name,

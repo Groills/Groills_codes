@@ -8,10 +8,10 @@ export interface Video extends Document {
   thumbnail: string;
   videoType: string;
   videoSkills: [string];
-  views: Number;
-  likes: Number;
+  views: number;
+  likes: number;
   etag: string;
-  duration: Number;
+  duration: number;
 }
 
 const VideoSchema: Schema<Video> = new Schema(

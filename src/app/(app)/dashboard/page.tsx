@@ -34,7 +34,6 @@ import {
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import {
-  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -90,13 +89,13 @@ interface User {
 interface ownerType {
   _id: string;
   username: string;
-  profilePic: any;
+  profilePic: string;
 }
 
 type TooltipPayloadItem = {
   name: string;
   value: number | string;
-  payload: any;
+  payload: number | string;
   dataKey: string | number;
   color: string;
 };
@@ -157,7 +156,7 @@ export default function Dashboard() {
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
-  const [messages, setMessages] = useState<messageType[]>([]);
+  const messages: messageType[] = []
   const [loading, setLoading] = useState(true);
 
   const dummyProgressData = [

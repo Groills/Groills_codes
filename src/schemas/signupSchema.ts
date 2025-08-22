@@ -1,7 +1,5 @@
 import { z } from "zod";
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-// Maximum 100MB for video
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",

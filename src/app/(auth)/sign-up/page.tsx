@@ -56,9 +56,6 @@ function Page() {
   const [isCheckingUsername, setIscheckingUsername] = useState(false);
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [profilePicPreview, setProfilePicPreview] = useState<string | null>(
-    null
-  );
   const router = useRouter();
 
   // profile pic states
@@ -147,17 +144,6 @@ function Page() {
     },
   });
 
-  // onThumbnail Drop
-  const onProfilePicDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        form.setValue("profilePic", file, { shouldValidate: true });
-        setProfilePicPreview(URL.createObjectURL(file));
-      }
-    },
-    [form.setValue]
-  );
 
   // using useEffect to check username on the basis of debounceCallback
   useEffect(() => {

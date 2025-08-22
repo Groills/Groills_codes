@@ -18,7 +18,6 @@ import {
   Menu,
   Package,
   StarIcon,
-  ThumbsUp,
   Upload,
   User2,
   Video,
@@ -50,7 +49,7 @@ interface Video {
 interface owner {
   _id: string;
   username: string;
-  profilePic: any;
+  profilePic: string;
   createdAt: string;
 }
 type messageType = {
@@ -65,7 +64,8 @@ const UserProfilePage = () => {
   const [owner, setOwner] = useState<owner>();
   const { data: session, status } = useSession();
   const [dashboardOpen, setDashboardOpen] = useState(false);
-  const [messages, setMessages] = useState<messageType[]>([]);
+  const messages: messageType[] = [];
+
   const [currentUser, setCurrentUser] = useState<owner>();
   const meetingId = uuidv4();
   const router = useRouter();

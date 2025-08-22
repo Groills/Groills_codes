@@ -18,12 +18,19 @@ export async function sendVerificationEmail(
       success: true,
       message: "Email sent successfully",
     };
-  } catch (error: any) {
-    console.log("Error while sending email:", error);
-    return {
-      success: false,
-      message: "Failed to send email",
-      error: error?.message || "Unknown error",
-    };
+  } catch (error: unknown) {
+  console.log("Error while sending email:", error);
+
+  let errorMessage = "Unknown error";
+  if (error instanceof Error) {
+    errorMessage = error.message;
   }
+
+  return {
+    success: false,
+    message: "Failed to send email",
+    error: errorMessage,
+  };
+}
+
 }

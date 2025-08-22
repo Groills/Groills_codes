@@ -8,7 +8,7 @@ import {
   useMotionValue,
   useSpring,
 } from "motion/react";
-
+import { MouseEvent } from "react";
 export const AnimatedTooltip = ({
   items,
 }: {
@@ -32,14 +32,14 @@ export const AnimatedTooltip = ({
     useTransform(x, [-100, 100], [-50, 50]),
     springConfig,
   );
-  const handleMouseMove = (event: any) => {
-    const halfWidth = event.target.offsetWidth / 2;
-    x.set(event.nativeEvent.offsetX - halfWidth); // set the x value, which is then used in transform and rotate
-  };
-
+  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+  const { currentTarget, nativeEvent } = event;
+  const halfWidth = currentTarget.offsetWidth / 2;
+  x.set(nativeEvent.offsetX - halfWidth); // set the x value for transform/rotate
+};
   return (
     <>
-      {items.map((item, idx) => (
+      {items.map((item) => (
         <div
           className="group relative -mr-4"
           key={item.name}

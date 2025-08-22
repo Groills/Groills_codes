@@ -3,7 +3,20 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import UserModel from "@/model/User";
 import dbConnect from "@/lib/dbConnect";
+import { User } from "next-auth";
+type Credentials = {
+  email: string;
+  password: string;
+};
+interface IUser {
+  _id: string;
+  email: string;
+  password: string;
+  username?: string;
+  isVerified?: boolean;
+  profilepic: string;
 
+}
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -21,7 +34,7 @@ export const authOptions: NextAuthOptions = {
           placeholder: "Enter the password",
         },
       },
-      async authorize(credentials: any): Promise<any> {
+      async authorize(credentials: Credentials | undefined): Promise<User | null> {
         try {
           await dbConnect();
           const user = await UserModel.findOne({
@@ -41,9 +54,12 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          return user;
-        } catch (error: any) {
-          throw new Error("Error while signing user: ", error);
+          return user as User;
+        } catch (error: unknown) {
+          if(error instanceof Error){
+            throw new Error("Error while signing user: ", error);
+          }
+           throw new Error("Unknown error while signing user");
         }
       },
     }),

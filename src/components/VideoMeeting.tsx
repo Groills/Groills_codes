@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-
+import type { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 // Dynamically import ZegoUIKitPrebuilt (client-only)
 const getZego = () =>
   import("@zegocloud/zego-uikit-prebuilt").then((mod) => mod.ZegoUIKitPrebuilt);
@@ -14,7 +14,7 @@ const getZego = () =>
 export default function VideoMeeting() {
   const { data: session, status: sessionStatus } = useSession();
   const containerRef = useRef<HTMLDivElement>(null);
-  const zpRef = useRef<any>(null);
+  const zpRef = useRef<ZegoUIKitPrebuilt | null>(null);
   const router = useRouter();
   const params = useParams();
   const roomId = Array.isArray(params.roomId) ? params.roomId[0] : params.roomId;
@@ -36,7 +36,6 @@ export default function VideoMeeting() {
         if (!ZegoUIKitPrebuilt) throw new Error("Failed to load ZegoUIKitPrebuilt");
 
         const userID = session?.user.email?.replace(/[^\w]/g, "_") || `user_${Date.now()}`;
-        const userName = session?.user.name || "Guest";
 
         const res = await axios.post(
           "/api/zego-token",
@@ -71,9 +70,11 @@ export default function VideoMeeting() {
             router.push("/dashboard");
           },
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Meeting init error:", err);
-        setError(err?.message || "Unknown error");
+        if(err instanceof Error){
+          setError(err?.message || "Unknown error");
+        }
         setMeetingStatus("error");
       }
     };
@@ -126,7 +127,7 @@ export default function VideoMeeting() {
         </div>
       ) : (
         <button
-          onClick={() => zpRef.current?.leaveRoom()}
+          onClick={() => zpRef.current?.destroy()}
           className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full shadow-lg z-10"
         >
           Leave Meeting

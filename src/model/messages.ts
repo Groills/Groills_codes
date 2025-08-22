@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface Message extends Document {
-  text: String;
+  text: string;
   userId: Schema.Types.ObjectId;
   ownerId: Schema.Types.ObjectId;
-  isAccepted: Boolean;
-  link: String;
+  isAccepted: boolean;
+  link: string;
 }
 
 const MessageSchema: Schema<Message> = new Schema(

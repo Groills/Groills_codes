@@ -20,7 +20,6 @@ import {
   Edit,
   User2,
 } from "lucide-react";
-import { FiUser } from "react-icons/fi";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -53,12 +52,12 @@ interface CommentType {
   likes: number;
   text: string;
   createdAt: string;
-  profilePic: any;
+  profilePic: string;
 }
 interface owner {
   _id: string;
   username: string;
-  profilePic: any;
+  profilePic: string;
 }
 type messageType = {
   id: string;
@@ -93,7 +92,7 @@ const VideoPage = () => {
   const [owner, setOwner] = useState<owner>();
   const [video, setVideo] = useState<Video>();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<CommentType[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -101,12 +100,12 @@ const VideoPage = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const { data: session, status } = useSession();
-  const [progress, setProgress] = useState(0);
   const progressRef = useRef(0);
   const router = useRouter();
   const [dashboardOpen, setDashboardOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<owner>();
-  const [messages, setMessages] = useState<messageType[]>([]);
+  const messages: messageType[] = [];
+
   const meetingId = uuidv4();
   const [CurrentUserVideos, setCurrentUserVideos] = useState<Video[]>([]);
   // handling like
@@ -202,7 +201,6 @@ const VideoPage = () => {
           console.log("today", progressRes.data.day);
           const currentProgress = progressRes.data.progress;
           progressRef.current = currentProgress;
-          setProgress(currentProgress);
         }
 
         // 2. Get username using user ID from video
@@ -248,8 +246,10 @@ const VideoPage = () => {
             }
           }
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        }
         setLoading(false);
       }
     };
@@ -341,7 +341,6 @@ const VideoPage = () => {
   async function handleVideoEnded() {
     const updatedProgress = progressRef.current + 5;
     progressRef.current = updatedProgress;
-    setProgress(updatedProgress);
 
     try {
       const viewsResponse = await axios.post(`/api/videos/${id}/views`);
@@ -1000,7 +999,6 @@ const VideoPage = () => {
 };
 
 import { ChevronDownIcon } from "lucide-react";
-import { userAgent } from "next/server";
 
 const CommentList = ({ comments }: { comments: CommentType[] }) => {
   const [showAll, setShowAll] = useState(false);
@@ -1279,23 +1277,6 @@ const ThumbsDownIcon = ({ className = "w-5 h-5" }) => (
       strokeLinejoin="round"
       strokeWidth={2}
       d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.017c.163 0 .326.02.485.06L17 4m0 0v9m0-9h2.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0118.263 15H17m0 0v5M7 11h3m0 0H7m3 0v5"
-    />
-  </svg>
-);
-
-const SortIcon = ({ className = "w-5 h-5" }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
     />
   </svg>
 );

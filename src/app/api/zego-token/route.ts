@@ -46,10 +46,17 @@ export async function POST(req: Request) {
       { success: true, token, message: "Token generated securely" },
       { status: 200 }
     );
-  } catch (err: any) {
-    return NextResponse.json(
-      { success: false, message: "Server error", error: err.message },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+  let message = "Server error";
+
+  if (err instanceof Error) {
+    message = err.message;
   }
+
+  return NextResponse.json(
+    { success: false, message },
+    { status: 500 }
+  );
+}
+
 }
