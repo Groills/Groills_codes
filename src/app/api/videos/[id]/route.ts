@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import VideoModel from '@/model/video';
 import dbConnect from '@/lib/dbConnect';
 
-export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest,  { params }: { params: Promise<{ id: string }> }) {
   await dbConnect()
-  const params = await context.params;
-  const { id } = params
+  const { id } = await params;
   try {
     const video = await VideoModel.findOne({ _id: id })
     return NextResponse.json({

@@ -4,17 +4,16 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await dbConnect();
   
   // Await the params promise
-  const params = await context.params;
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const comments = await CommentsModel.find({ videoId: id })
-      .sort({ createdAt: -1 }) // newest → oldest
+      .sort({ createdAt: -1 })
       .exec();
 
     return NextResponse.json(
