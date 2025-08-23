@@ -3,7 +3,6 @@
 
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { FaGithub, FaTwitter, FaDiscord, FaLinkedin } from "react-icons/fa";
 
 
@@ -46,14 +45,7 @@ export default function Footer() {
       },
     },
   };
-  type Bubble = {
-  width: number;
-  height: number;
-  top: number;
-  left: number;
-  xMove: Array<number>;
-  duration: number;
-};
+  
 
 
   return (

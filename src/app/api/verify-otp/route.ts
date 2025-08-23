@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const checkingVerificationCode = {
       verifyCode: verifyOTP,
     };
-    
+
     const result = verifyCodeSchema.safeParse(checkingVerificationCode);
     if (!result.success) {
       const verifyCodeError = result.error.format().verifyCode?._errors;
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const verificationCodeFromResult = result.data.verifyCode;
 
     const existedUserbyUsername = await UserModel.findOne({ username });
-    console.log(existedUserbyUsername)
+    console.log(existedUserbyUsername);
     if (!existedUserbyUsername) {
       return Response.json(
         {
@@ -34,35 +34,46 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const isCodeNotExpired = new Date(existedUserbyUsername.verificationCodeExpiry) > new Date();
-    const isCodeValid = verificationCodeFromResult === existedUserbyUsername.verificationCode;
+    const isCodeNotExpired =
+      new Date(existedUserbyUsername.verificationCodeExpiry) > new Date();
+    const isCodeValid =
+      verificationCodeFromResult === existedUserbyUsername.verificationCode;
 
     if (isCodeValid && isCodeNotExpired) {
       existedUserbyUsername.isVerified = true;
       await existedUserbyUsername.save();
-      return Response.json({
-        success: true,
-        message: "Verified successfully",
-      }, { status: 200 });
+      return Response.json(
+        {
+          success: true,
+          message: "Verified successfully",
+        },
+        { status: 200 }
+      );
     }
 
-    if(!isCodeNotExpired){
-        return Response.json({
-            success: false,
-            message: "Code is expired, Please signup again"
-        }, { status: 400 })
+    if (!isCodeNotExpired) {
+      return Response.json(
+        {
+          success: false,
+          message: "Code is expired, Please signup again",
+        },
+        { status: 400 }
+      );
     }
-    if(!isCodeValid){
-        return Response.json({
-            success: false,
-            message: "Code is invalid"
-        }, { status: 400 })
+    if (!isCodeValid) {
+      return Response.json(
+        {
+          success: false,
+          message: "Code is invalid",
+        },
+        { status: 400 }
+      );
     }
   } catch (error) {
     return Response.json(
       {
         success: false,
-        message: "Error while verifying the code" + Error,
+        message: "Error while verifying the code" + error,
       },
       { status: 500 }
     );
