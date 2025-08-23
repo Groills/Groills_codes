@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   await dbConnect();
-  const { id } = context.params;
+  const { id } = params;
 
   try {
     const comments = await CommentsModel.find({ videoId: id })
