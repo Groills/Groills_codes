@@ -4,28 +4,30 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   await dbConnect();
-  const { id } = params;
+  const { id } = context.params;
+
   try {
     const comments = await CommentsModel.find({ videoId: id })
-      .sort({ createdAt: -1 }) // 👈 newest → oldest
+      .sort({ createdAt: -1 }) // newest → oldest
       .exec();
+
     return NextResponse.json(
       {
         success: true,
-        message: "Comment fetched successfully",
-        comments: comments,
+        message: "Comments fetched successfully",
+        comments,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error while creating comment:", error);
+    console.error("Error while fetching comments:", error);
     return NextResponse.json(
       {
         success: false,
-        message: "Error while creating comment",
+        message: "Error while fetching comments",
       },
       { status: 500 }
     );
