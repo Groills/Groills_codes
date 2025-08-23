@@ -1,12 +1,15 @@
 import dbConnect from "@/lib/dbConnect";
 import CommentsModel from "@/model/comments";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   await dbConnect();
+  
+  // Await the params promise
+  const params = await context.params;
   const { id } = params;
 
   try {
