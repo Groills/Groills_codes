@@ -6,13 +6,13 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export async function POST(
   request: Request,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await dbConnect();
   const session = await getServerSession(authOptions);
 
   // Then access params
-  const { id } = context.params;
+  const { id } = await params;
 
   // Rest of your implementation...
   const body = await request.json();

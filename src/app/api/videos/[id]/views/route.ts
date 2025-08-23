@@ -4,10 +4,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   request: Request,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
+
 ) {
   await dbConnect();
-  const { id } = context.params;
+   const { id } = await params;
 
   try {
     const video = await VideoModel.findByIdAndUpdate(
