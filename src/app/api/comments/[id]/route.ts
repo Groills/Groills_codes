@@ -1,17 +1,17 @@
 import dbConnect from "@/lib/dbConnect";
 import CommentsModel from "@/model/comments";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: Record<string, string> }
+  request: NextRequest,
+  { params }: { params: { id: string } }
 ) {
   await dbConnect();
   const { id } = params;
 
   try {
     const comments = await CommentsModel.find({ videoId: id })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 }) // newest → oldest
       .exec();
 
     return NextResponse.json(

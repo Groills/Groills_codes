@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import VideoModel from '@/model/video';
 import dbConnect from '@/lib/dbConnect';
 
-export async function GET(request: Request, { params } : { params: { id: string }}) {
+export async function GET(request: NextRequest, { params } : { params: { id: string }}) {
   await dbConnect()
   const { id } = params
   try {
