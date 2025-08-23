@@ -4,14 +4,14 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Record<string, string> }
 ) {
   await dbConnect();
   const { id } = params;
 
   try {
     const comments = await CommentsModel.find({ videoId: id })
-      .sort({ createdAt: -1 }) // newest → oldest
+      .sort({ createdAt: -1 })
       .exec();
 
     return NextResponse.json(
