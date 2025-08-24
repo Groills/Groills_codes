@@ -1,60 +1,42 @@
-import uploadOnCloudinary from "@/helpers/cloudinary";
 import VideoModel from "@/model/video";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
-export const config = {
-  runtime: "nodejs",
-  api: {
-    bodyParser: false, 
-  },
-};
+
 export async function POST(request: Request) {
   await dbConnect();
   const session = await getServerSession(authOptions);
+
   if (!session?.user?._id) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
       { status: 401 }
     );
   }
-  
+
   try {
-    const formData = await request.formData();
+    // 1. Parse JSON (not formData)
+    const body = await request.json();
+    const { title, description, videoUrl, thumbnailUrl, video_skills, etag, duration } = body;
 
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const thumbnail = formData.get("thumbnail") as File;
-    const video = formData.get("video") as File;
-    const video_skills = formData.getAll("video_skills") as string[];
+    if (!title || !description || !videoUrl) {
+      return NextResponse.json(
+        { success: false, message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
-    const thumbnailBuffer = await thumbnail.arrayBuffer();
-    const videoBuffer = await video.arrayBuffer();
-
-    const thumbnailUpload = await uploadOnCloudinary(
-      Buffer.from(thumbnailBuffer),
-      "image"
-    );
-    const videoUpload = await uploadOnCloudinary(
-      Buffer.from(videoBuffer),
-      "video"
-    );
-
-    const etag = videoUpload?.etag
-
-    
-    
+    // 2. Save to DB
     const newVideo = await VideoModel.create({
       title,
       description,
-      video: videoUpload?.url,
-      thumbnail: thumbnailUpload?.url,
-      isPublished: true,
+      video: videoUrl,
+      thumbnail: thumbnailUrl,
       user: session.user._id,
-      videoSkills: video_skills,
-      etag: etag,
-      duration: videoUpload?.duration 
+      videoSkills: video_skills || [],
+      etag,
+      duration,
     });
 
     return NextResponse.json(
@@ -64,7 +46,7 @@ export async function POST(request: Request) {
         data: newVideo,
       },
       { status: 201 }
-    ); 
+    );
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(
@@ -76,4 +58,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

@@ -12,15 +12,13 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 type FormData = z.infer<typeof videoValidationSchema>;
 
-
-
 const VideoUploadForm = () => {
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
-  
-  const router = useRouter()
+
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -96,47 +94,85 @@ const VideoUploadForm = () => {
     setValue("video_skills", updatedSkills, { shouldValidate: true });
   };
 
- const onSubmit = async (data: FormData) => {
-  setIsUploading(true);
-  setUploadProgress(0);
+  const onSubmit = async (data: FormData) => {
+    try {
+      setIsUploading(true);
+      setUploadProgress(0);
 
-  const formData = new FormData();
-  formData.append('title', data.title);
-  formData.append('description', data.description);
-  formData.append('thumbnail', data.thumbnail);
-  formData.append('video', data.video);
-  data.video_skills.forEach(skill => formData.append('video_skills', skill.toLowerCase()));
+      // 1. Get Cloudinary signature from API
+      const sigRes = await axios.get("/api/cloudinary-sign");
+      const { timestamp, signature, cloudName, apiKey } = sigRes.data;
 
-  try {
-    const response = await axios.post('/api/upload-video', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress: (progressEvent) => {
-        if (progressEvent.total) {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(percentCompleted);
+      // 2. Upload video to Cloudinary
+      const videoForm = new FormData();
+      videoForm.append("file", data.video);
+      videoForm.append("api_key", apiKey);
+      videoForm.append("timestamp", timestamp);
+      videoForm.append("signature", signature);
+
+      const videoRes = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
+        videoForm,
+        {
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setUploadProgress(percentCompleted);
+            }
+          },
         }
-      },
-    });
-    if(!response.data.success){
-        toast.error(response.data.message)
-    } else{
-        toast.success(response.data.message)
+      );
+
+      const videoUrl = videoRes.data.secure_url;
+
+      // 3. Upload thumbnail (optional)
+      let thumbnailUrl = "";
+      if (data.thumbnail) {
+        const thumbForm = new FormData();
+        thumbForm.append("file", data.thumbnail);
+        thumbForm.append("api_key", apiKey);
+        thumbForm.append("timestamp", timestamp);
+        thumbForm.append("signature", signature);
+
+        const thumbRes = await axios.post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          thumbForm
+        );
+
+        thumbnailUrl = thumbRes.data.secure_url;
+      }
+
+      // 4. Send metadata + URLs to your backend
+      const payload = {
+        title: data.title,
+        description: data.description,
+        video_skills: data.video_skills.map((s) => s.toLowerCase()),
+        videoUrl,
+        thumbnailUrl,
+        etag: videoRes.data.etag,
+        duration: videoRes.data.duration,
+      };
+
+      const response = await axios.post("/api/upload-video", payload);
+
+      if (!response.data.success) {
+        toast.error(response.data.message);
+      } else {
+        toast.success("Video uploaded successfully!");
+        reset();
+        setThumbnailPreview(null);
+        setVideoPreview(null);
+        router.replace("/user/videos");
+      }
+    } catch (error: any) {
+      console.error("Upload failed:", error);
+      toast.error(error.response?.data?.message || "Upload failed");
+    } finally {
+      setIsUploading(false);
     }
-    reset();
-    toast.success("Video uploaded successfully")
-    router.replace("/user/videos")
-    setThumbnailPreview(null);
-    setVideoPreview(null);
-    setIsUploading(false);
-  } catch (error) {
-    setIsUploading(false);
-    console.error("Upload failed:", error);
-  }
-};
+  };
 
   return (
     <motion.div
@@ -320,8 +356,8 @@ const VideoUploadForm = () => {
           </div>
 
           <div className="mt-2 flex flex-wrap gap-2">
-            { skills.map((skill, index) => (
-                 <motion.div
+            {skills.map((skill, index) => (
+              <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
