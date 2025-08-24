@@ -4,7 +4,12 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
-
+export const config = {
+  runtime: "nodejs",
+  api: {
+    bodyParser: false, 
+  },
+};
 export async function POST(request: Request) {
   await dbConnect();
   const session = await getServerSession(authOptions);

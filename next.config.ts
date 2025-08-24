@@ -6,7 +6,14 @@ const nextConfig = {
   swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
-  }
+  },
+  api: {
+    bodyParser: false,
+  },
+
+  experimental: {
+    runtime: "nodejs",
+  },
 };
 
 export default nextConfig;

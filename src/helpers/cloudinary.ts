@@ -13,6 +13,9 @@ const uploadOnCloudinary = async (
   resourceType: 'image' | 'video' = 'image'
 ): Promise<UploadApiResponse | null> => {
   try {
+    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+      throw new Error("Missing Cloudinary configuration");
+    }
     return new Promise<UploadApiResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
