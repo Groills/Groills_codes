@@ -100,7 +100,6 @@ const VideoPage = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const { data: session, status } = useSession();
-  const progressRef = useRef(0);
   const router = useRouter();
   const [dashboardOpen, setDashboardOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<owner>();
@@ -189,19 +188,6 @@ const VideoPage = () => {
         setVideo(fetchedVideo);
         setLoading(false);
 
-        const progressRes = await axios.post(
-          `/api/get-user-progress`,
-          {
-            userId: session?.user._id,
-          },
-          { headers: { "Content-Type": "application/json" } }
-        );
-
-        if (progressRes.data.success) {
-          console.log("today", progressRes.data.day);
-          const currentProgress = progressRes.data.progress;
-          progressRef.current = currentProgress;
-        }
 
         // 2. Get username using user ID from video
         if (fetchedVideo?.user) {
@@ -339,8 +325,6 @@ const VideoPage = () => {
 
   // video end handling
   async function handleVideoEnded() {
-    const updatedProgress = progressRef.current + 5;
-    progressRef.current = updatedProgress;
 
     try {
       const viewsResponse = await axios.post(`/api/videos/${id}/views`);
@@ -360,7 +344,6 @@ const VideoPage = () => {
 
       const updateProgress = await axios.post(`/api/update-progress`, {
         userId: session?.user._id,
-        progress: updatedProgress,
       });
 
       if (updateProgress.data.success) {

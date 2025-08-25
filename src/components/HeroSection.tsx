@@ -12,8 +12,8 @@ const HeroSection = () => {
     {
       id: 1,
       name: "Vivek Singh",
-      skill: "CEO of Groills",
-      avatar: "/vivek-photo.jpg",
+      skill: "Founder",
+      avatar: "/vivek-photo.png",
     },
     {
       id: 2,
@@ -24,8 +24,8 @@ const HeroSection = () => {
     {
       id: 3,
       name: "Abhishek Singh",
-      skill: "Digital Marketer",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+      skill: "Co-founder and manager",
+      avatar: "abhishek-photo.png",
     },
     {
       id: 4,

@@ -34,7 +34,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <GlobalNavbar />
-          <CopilotKit publicApiKey={process.env.NEXT_COPILOT_PUBLIC_KEY}>
+          <CopilotKit publicApiKey="ck_pub_e8e8826adc4038a05443b47475fd8b9e">
             {children}
             <CopilotPopup
               instructions={
